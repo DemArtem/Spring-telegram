@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -73,6 +74,27 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 default:
                     sendMessage(chatId,"Sorry, the command was not recognized");
+            }
+        } else if (update.hasCallbackQuery()){
+            long messageId = update.getCallbackQuery().getMessage().getMessageId();
+            long chatId = update.getCallbackQuery().getMessage().getChatId();
+            String callbackData = update.getCallbackQuery().getData();
+
+            String text = "";
+            if (callbackData.equals("YES_BUTTON")){
+                text ="You pressed YES button";
+            }
+            else if (callbackData.equals("NO_BUTTON")){
+                text ="You pressed NO button";
+            }
+            EditMessageText message = new EditMessageText();
+            message.setChatId(String.valueOf(chatId));
+            message.setText(text);
+            message.setMessageId((int)messageId);
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                log.error("Error occured: "+ e.getMessage());
             }
         }
     }
