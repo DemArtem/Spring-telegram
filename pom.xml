@@ -11,6 +11,8 @@
     <modules>
         <module>simple-bot</module>
         <module>bot-2</module>
+        <module>bot-3</module>
+
     </modules>
 
     <properties>
